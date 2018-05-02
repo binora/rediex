@@ -1,18 +1,16 @@
 defmodule Rediex do
-  @moduledoc """
-  Documentation for Rediex.
-  """
+  use Application
+  require Logger
 
-  @doc """
-  Hello world.
+  def start(_type, _args) do
+    port = Application.get_env(:rediex, :cowboy_port, 8080)
+    children = [
+      Plug.Adapters.Cowboy.child_spec(:http, RediexRouter, [], port: 8080)
+    ]
 
-  ## Examples
+    Logger.info("Started rediex")
 
-      iex> Rediex.hello
-      :world
-
-  """
-  def hello do
-    :world
+    Supervisor.start_link(children, strategy: :one_for_one)
   end
+
 end
