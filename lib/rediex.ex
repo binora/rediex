@@ -7,10 +7,10 @@ defmodule Rediex do
     children = [
       Plug.Adapters.Cowboy.child_spec(:http, RediexRouter, [], port: 8080)
     ]
-
     Logger.info("Started rediex")
-
     Supervisor.start_link(children, strategy: :one_for_one)
+
+    Rediex.Database.Supervisor.start_link
   end
 
 end

@@ -5,7 +5,7 @@ defmodule Rediex.Plug.VerifyCommand do
 
   def call(%Plug.Conn{body_params: %{"command" => command}} = conn, options) do
     if String.to_atom(command) not in options[:commands] do
-      raise BadRequestError.message("Command not implemented")
+      raise BadRequestError.exception("Command not implemented")
     end
     conn
   end

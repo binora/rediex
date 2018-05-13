@@ -1,7 +1,7 @@
 defmodule RediexRouter do
   use Plug.Router
   alias Rediex.Plug.VerifyCommand
-  import Rediex.Command.Dispatcher
+  import Rediex.Dispatcher
 
 
   plug Plug.Parsers,
