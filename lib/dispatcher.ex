@@ -1,10 +1,14 @@
 defmodule Rediex.Dispatcher do
-  alias Rediex.Commands.{Set, Get}
+  alias Rediex.Commands.KV
 
   def valid_commands do
     [
-      {:set, &Set.set/2},
-      {:get, &Get.get/1}
+      {:set, &KV.set/2},
+      {:get, &KV.get/1},
+      {:incr, &KV.incr/1},
+      {:incrby, &KV.incr_by/2},
+      {:decr, &KV.decr/1},
+      {:decrby, &KV.decr_by/2},
     ]
   end
 

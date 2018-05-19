@@ -3,7 +3,6 @@ defmodule Rediex.Plug.VerifyCommandTest do
   use Plug.Test
 
   alias Rediex.Plug.VerifyCommand
-  alias Rediex.Command.Dispatcher
 
   @opts VerifyCommand.init(%{commands: [:command]})
 

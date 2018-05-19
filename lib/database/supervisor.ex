@@ -7,7 +7,7 @@ defmodule Rediex.Database.Supervisor do
 
   def init([]) do
     children = [
-      worker(Rediex.Database, [])
+      worker(Rediex.Database.KV, [], restart: :temporary)
     ]
 
     supervise(children, strategy: :one_for_one)
