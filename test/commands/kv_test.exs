@@ -1,13 +1,14 @@
 defmodule Rediex.Commands.KVTest do
   use ExUnit.Case
   alias Rediex.Commands.KV
+  alias Rediex.Database.KV.Impl
 
   test "get command should return nil for unset key" do
     assert nil == KV.get("unsetkey")
   end
 
   test "set command should set the given value for the key" do
-    assert :ok == KV.set("key", "value")
+    assert "OK" == KV.set("key", "value")
     assert "value" == KV.get("key")
   end
 
@@ -55,7 +56,13 @@ defmodule Rediex.Commands.KVTest do
     KV.set("incr_error_key", "string")
     result  = KV.incr("incr_error_key")
 
-    assert result == KV.not_an_integer()
+    assert result == Impl.not_an_integer()
     assert "string" == KV.get("incr_error_key")
+  end
+
+  test "get_set should get previous value and set new value" do
+    KV.set("my_key", "hello")
+    assert "hello" == KV.get_set("my_key", "world")
+    assert "world" == KV.get("my_key")
   end
 end
