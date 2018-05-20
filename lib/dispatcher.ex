@@ -5,6 +5,7 @@ defmodule Rediex.Dispatcher do
     [
       {:set, &KV.set/2},
       {:get, &KV.get/1},
+      {:get_set, &KV.get_set/2},
       {:incr, &KV.incr/1},
       {:incrby, &KV.incr_by/2},
       {:decr, &KV.decr/1},
