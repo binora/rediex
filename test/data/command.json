@@ -1,0 +1,4 @@
+{
+"command": "set",
+"args" : ["key", "val"]
+}
