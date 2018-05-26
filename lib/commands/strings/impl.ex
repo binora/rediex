@@ -1,12 +1,13 @@
 defmodule Rediex.Commands.Strings.Impl do
+  alias Rediex.Commands.Helpers
+
+
   @not_an_integer "Value not an integer"
 
   def not_an_integer, do: @not_an_integer
 
-  def init(), do: %{}
-
   def execute(:set, {key, value}, state) do
-    {:ok, value, set(state, key, value)}
+    {:ok, value, Helpers.set(state, key, value)}
   end
 
   def execute(:get, {key}, state) do
@@ -14,17 +15,16 @@ defmodule Rediex.Commands.Strings.Impl do
   end
 
   def execute(:get_set, {key, value}, state) do
-    {:ok, state[key], set(state, key, value)}
+    {:ok, state[key], Helpers.set(state, key, value)}
   end
 
   def execute(:incr, {key, step}, state) do
     case increment(state[key], step) do
       {:error, error} -> {:ok, error, state}
-      value -> {:ok, value, set(state, key, value)}
+      value -> {:ok, value, Helpers.set(state, key, value)}
     end
   end
 
-  def set(state, key, value), do: Map.put(state, key, value)
 
   defp increment(value, step) when is_number(value), do: value + step
   defp increment(value, step) when is_nil(value), do: step
