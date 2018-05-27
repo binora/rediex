@@ -6,19 +6,19 @@ defmodule Rediex.Commands.Strings.Impl do
 
   def not_an_integer, do: @not_an_integer
 
-  def execute(:set, {key, value}, state) do
+  def execute(:set, [key, value], state) do
     {:ok, value, Helpers.set(state, key, value)}
   end
 
-  def execute(:get, {key}, state) do
+  def execute(:get, [key], state) do
     {:ok, state[key], state}
   end
 
-  def execute(:get_set, {key, value}, state) do
+  def execute(:get_set, [key, value], state) do
     {:ok, state[key], Helpers.set(state, key, value)}
   end
 
-  def execute(:incr, {key, step}, state) do
+  def execute(:incr, [key, step], state) do
     case increment(state[key], step) do
       {:error, error} -> {:ok, error, state}
       value -> {:ok, value, Helpers.set(state, key, value)}
