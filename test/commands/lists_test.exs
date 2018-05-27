@@ -1,7 +1,6 @@
 defmodule Rediex.Commands.ListsTest do
   use ExUnit.Case
   alias Rediex.Commands.Lists
-  alias Rediex.Commands.Lists.Impl
 
   def get_any_key(key) do
     GenServer.call(:database, {:get_any_key, key})
