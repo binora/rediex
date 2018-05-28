@@ -3,12 +3,12 @@ defmodule Rediex.Database do
   alias Rediex.Commands.Strings.Impl, as: StringsImpl
   alias Rediex.Commands.Lists.Impl, as: ListsImpl
 
-  def start_link do
-    GenServer.start_link(__MODULE__, %{}, name: :database)
+  def start_link(name, state \\ %{}) do
+    GenServer.start_link(__MODULE__, state, name: via_tuple(name))
   end
 
-  def init(%{}) do
-    {:ok, %{}}
+  def init(state) do
+    {:ok, state}
   end
 
   def handle_call({:strings, cmd, args}, _from, state) do
@@ -23,6 +23,10 @@ defmodule Rediex.Database do
 
   def handle_call({:get_any_key, key}, _from, state) do
     {:reply, state[key], state}
+  end
+
+  defp via_tuple(name) do
+    {:via, Registry, {:database_registry, name}}
   end
 
 end

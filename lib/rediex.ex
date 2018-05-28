@@ -1,16 +1,21 @@
 defmodule Rediex do
   use Application
+  use Supervisor
+  alias Rediex.Cluster
   require Logger
 
+
+  @cluster_upper_limit 16384
+
   def start(_type, _args) do
-    port = Application.get_env(:rediex, :cowboy_port, 8080)
+    cluster_size = Application.get_env(:rediex, :cluster_size)
     children = [
-      Plug.Adapters.Cowboy.child_spec(:http, RediexRouter, [], port: port)
+      supervisor(Registry, [:unique, :database_registry]),
+      supervisor(Rediex.Database.Supervisor, []),
+      worker(Task, [&Cluster.create_cluster/0], restart: :temporary)
     ]
     Logger.info("Started rediex")
     Supervisor.start_link(children, strategy: :one_for_one)
-
-    Rediex.Database.Supervisor.start_link
   end
 
 end
