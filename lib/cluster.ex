@@ -1,20 +1,20 @@
 defmodule Rediex.Cluster do
-  @limit 16384
+  @moduledoc false
+  @limit 16_384
   @size Application.get_env(:rediex, :cluster_size)
-
 
   def crc16(key) do
     CRC.crc(:crc_16_xmodem, key) |> Integer.mod(@limit)
   end
 
   def decide_database(key) do
-    hash_slot = crc16(key)
-    slot_size = round(@limit/@size)
+    slot_size = round(@limit / @size)
 
-    hash_slot/slot_size
-    |> Float.ceil
+    key
+    |> crc16
+    |> (&(&1 / slot_size)).()
+    |> Float.ceil()
     |> round
-
   end
 
   def create do

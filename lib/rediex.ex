@@ -1,14 +1,11 @@
 defmodule Rediex do
+  @moduledoc false
   use Application
   use Supervisor
   alias Rediex.Cluster
   require Logger
 
-
-  @cluster_upper_limit 16384
-
   def start(_type, _args) do
-    cluster_size = Application.get_env(:rediex, :cluster_size)
     children = [
       supervisor(Registry, [:unique, :database_registry]),
       supervisor(Rediex.Database.Supervisor, []),

@@ -1,4 +1,5 @@
 defmodule Rediex.Commands.Strings do
+  @moduledoc false
 
   def get(db, [key]) do
     GenServer.call(db, {:strings, :get, [key]})
