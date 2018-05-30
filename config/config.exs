@@ -29,4 +29,4 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 
-config :rediex, cluster_size: 1
+config :rediex, cluster_size: 3

@@ -2,27 +2,39 @@ defmodule Rediex.Cluster do
   @limit 16384
   @size Application.get_env(:rediex, :cluster_size)
 
+
   def crc16(key) do
-    CRC.crc(:crc_16_xmodem, key)
-    |> Integer.mod(@limit)
+    CRC.crc(:crc_16_xmodem, key) |> Integer.mod(@limit)
   end
 
-  def hello do
-    IO.inspect('hello')
+  def decide_database(key) do
+    hash_slot = crc16(key)
+    slot_size = round(@limit/@size)
+
+    hash_slot/slot_size
+    |> Float.ceil
+    |> round
+
   end
 
-  def create_cluster when @size > @limit,
-    do: {:error, "#{@size} cannot be greater than #{@limit}"}
+  def create do
+    {:ok, do_create(@limit, @size)}
+  end
 
-  def create_cluster when @size == 1, do: create_database("db_#{@size}", %{max_crc: @limit})
+  defp do_create(limit, 1), do: create_database("db_1", %{max_crc: limit})
 
-  def create_cluster do
+  defp do_create(limit, size) when size > limit,
+    do: {:error, "#{size} cannot be greater than #{limit}"}
+
+  defp do_create(limit, size) do
     slot_size = round(@limit / @size)
 
-    for i <- 1..(@size - 1) do
-      create_database("db_#{i}", %{max_crc: slot_size * i})
-    end
-    create_database("db_#{@size}", %{max_crc: @limit})
+    pids =
+      for i <- 1..(size - 1) do
+        create_database("db_#{i}", %{max_crc: slot_size * i})
+      end
+
+    pids ++ create_database("db_#{size}", %{max_crc: limit})
   end
 
   defp create_database(name, state) do

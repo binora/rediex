@@ -12,7 +12,7 @@ defmodule Rediex do
     children = [
       supervisor(Registry, [:unique, :database_registry]),
       supervisor(Rediex.Database.Supervisor, []),
-      worker(Task, [&Cluster.create_cluster/0], restart: :temporary)
+      worker(Task, [&Cluster.create/0], restart: :temporary)
     ]
     Logger.info("Started rediex")
     Supervisor.start_link(children, strategy: :one_for_one)

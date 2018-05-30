@@ -1,11 +1,11 @@
 defmodule Rediex.Commands.Lists do
 
-    def lpush(key, values) do
-        GenServer.call(:database, {:lists, :lpush, [key | values]})
+    def lpush(db, args) do
+        GenServer.call(db, {:lists, :lpush, args})
     end
 
-    def lrange(key, offsets) do
-        GenServer.call(:database, {:lists, :lrange, [key | offsets]})
+    def lrange(db, args) do
+        GenServer.call(db, {:lists, :lrange, args})
     end
 
 
