@@ -1,6 +1,6 @@
 defmodule Rediex.Commands.Strings.Impl do
+  @moduledoc false
   alias Rediex.Commands.Helpers
-
 
   @not_an_integer "Value not an integer"
 
@@ -24,7 +24,6 @@ defmodule Rediex.Commands.Strings.Impl do
       value -> {:ok, value, Helpers.set(state, key, value)}
     end
   end
-
 
   defp increment(value, step) when is_number(value), do: value + step
   defp increment(value, step) when is_nil(value), do: step

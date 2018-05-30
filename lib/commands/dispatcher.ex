@@ -1,4 +1,7 @@
 defmodule Rediex.Commands.Dispatcher do
+
+  @moduledoc false
+
   alias Rediex.Cluster
   alias Rediex.Commands.Strings
   alias Rediex.Commands.Lists
@@ -18,7 +21,7 @@ defmodule Rediex.Commands.Dispatcher do
 
   def dispatch(command, [key | _] = args) do
     db = get_db(key)
-    case Map.get(get_available_commands, command) do
+    case Map.get(get_available_commands(), command) do
       nil -> raise "Command not implemented"
       [module, fun] -> apply(module, fun, [db, args])
     end

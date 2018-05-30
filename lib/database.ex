@@ -1,4 +1,5 @@
 defmodule Rediex.Database do
+  @moduledoc false
   use GenServer
   alias Rediex.Commands.Strings.Impl, as: StringsImpl
   alias Rediex.Commands.Lists.Impl, as: ListsImpl

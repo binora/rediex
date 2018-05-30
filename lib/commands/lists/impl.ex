@@ -1,4 +1,5 @@
 defmodule Rediex.Commands.Lists.Impl do
+  @moduledoc false
   alias Rediex.Commands.Helpers
 
   def execute(:lpush, [key | values], state) do
@@ -8,6 +9,5 @@ defmodule Rediex.Commands.Lists.Impl do
 
   defp reverse([]), do: []
   defp reverse([head | tail]), do: reverse(tail) ++ [head]
-
 
 end
