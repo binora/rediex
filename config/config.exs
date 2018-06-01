@@ -30,3 +30,4 @@ use Mix.Config
 #     import_config "#{Mix.env}.exs"
 
 config :rediex, cluster_size: 3
+config :rediex, ip: {127, 0, 0, 1}, port: 6380

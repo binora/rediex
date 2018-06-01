@@ -9,7 +9,9 @@ defmodule Rediex do
     children = [
       supervisor(Registry, [:unique, :database_registry]),
       supervisor(Rediex.Database.Supervisor, []),
-      worker(Task, [&Cluster.create/0], restart: :temporary)
+      Supervisor.child_spec({Task, &Cluster.create/0}, restart: :temporary),
+      supervisor(Task.Supervisor, [], name: :client_supervisor),
+      Supervisor.child_spec({Task, &Rediex.Server.accept/0}, id: :rediex_server)
     ]
     Logger.info("Started rediex")
     Supervisor.start_link(children, strategy: :one_for_one)
