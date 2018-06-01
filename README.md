@@ -1,21 +1,34 @@
 # Rediex
 
-**TODO: Add description**
+As part of learning elixir and OTP, I decided to implement the functionality of redis in elixir.
 
-## Installation
+# Commands implemented so far
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `rediex` to your list of dependencies in `mix.exs`:
+## Strings
+- GET
+- SET
+- GETSET
+- INCR
+- INCRBY
+- DECR
+- DECRBY
 
-```elixir
-def deps do
-  [
-    {:rediex, "~> 0.1.0"}
-  ]
-end
-```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/rediex](https://hexdocs.pm/rediex).
+## Lists
+
+- LPUSH
+
+
+
+I'll update the README as and when i add more commands
+
+
+# TODO
+
+- Add persistance (AOF and snapshot)
+- tcp server to accept multiple clients
+- sample cli client to interact with rediex
+
+
+
 
