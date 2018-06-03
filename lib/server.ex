@@ -6,23 +6,14 @@ defmodule Rediex.Server do
 
   def accept do
     {:ok, socket} = :gen_tcp.listen(@port, [:binary, active: false, reuseaddr: true, ip: @ip])
-    accept(socket)
+    do_accept(socket)
   end
 
-  defp accept(socket) do
+  defp do_accept(socket) do
     {:ok, client} = :gen_tcp.accept(socket)
-    {:ok, pid} = Task.Supervisor.start_child(:client_supervisor, fn -> serve(client) end)
+    {:ok, pid} = Task.Supervisor.start_child(:tcp_task_supervisor, fn -> serve(client) end)
     :ok = :gen_tcp.controlling_process(client, pid)
-    accept(socket)
-  end
-
-  defp receive_data(client) do
-    {:ok, data} = :gen_tcp.recv(client, 0)
-    data
-  end
-
-  defp reply(data, client) do
-    :gen_tcp.send(client, data)
+    do_accept(socket)
   end
 
   defp serve(client) do
@@ -31,5 +22,17 @@ defmodule Rediex.Server do
     |> reply(client)
 
     serve(client)
+  end
+
+  defp receive_data(client) do
+    :gen_tcp.recv(client, 0)
+  end
+
+  defp reply({:error, :closed}, client) do
+    exit(:shutdown)
+  end
+
+  defp reply({:ok, data}, client) do
+    :gen_tcp.send(client, data)
   end
 end
