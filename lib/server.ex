@@ -5,13 +5,24 @@ defmodule Rediex.Server do
   @ip Application.get_env(:rediex, :ip)
 
   def accept do
-    {:ok, socket} = :gen_tcp.listen(@port, [:binary, active: false, reuseaddr: true, ip: @ip])
+    {:ok, socket} =
+      :gen_tcp.listen(
+        @port,
+        [:binary, active: false, reuseaddr: true, ip: @ip]
+      )
+
     do_accept(socket)
   end
 
   defp do_accept(socket) do
     {:ok, client} = :gen_tcp.accept(socket)
-    {:ok, pid} = Task.Supervisor.start_child(:tcp_task_supervisor, fn -> serve(client) end)
+
+    {:ok, pid} =
+      Task.Supervisor.start_child(
+        :connection_supervisor,
+        fn -> serve(client) end
+      )
+
     :ok = :gen_tcp.controlling_process(client, pid)
     do_accept(socket)
   end
