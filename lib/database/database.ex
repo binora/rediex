@@ -8,11 +8,6 @@ defmodule Rediex.Database do
     GenServer.start_link(__MODULE__, state, name: via_tuple(name))
   end
 
-  def init(state) do
-    Process.flag(:trap_exit, true)
-    {:ok, state}
-  end
-
   def handle_call({:strings, cmd, args}, _from, state) do
     case StringsImpl.execute(cmd, args, state) do
       {:ok, return_value, new_state} -> {:reply, return_value, new_state}
@@ -31,14 +26,8 @@ defmodule Rediex.Database do
     {:reply, state[key], state}
   end
 
-  def terminate(_, state) do
-    IO.inspect state
-    # File.write(Path.expand("./binny"), Enum.to_list(state))
-  end
-
   defp via_tuple(name) do
     {:via, Registry, {:database_registry, name}}
   end
-
 
 end
