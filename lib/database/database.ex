@@ -9,25 +9,36 @@ defmodule Rediex.Database do
   end
 
   def init(state) do
+    Process.flag(:trap_exit, true)
     {:ok, state}
   end
 
   def handle_call({:strings, cmd, args}, _from, state) do
-    {:ok, return_value, new_state} = StringsImpl.execute(cmd, args, state)
-    {:reply, return_value, new_state}
+    case StringsImpl.execute(cmd, args, state) do
+      {:ok, return_value, new_state} -> {:reply, return_value, new_state}
+      {:error, :wrong_args_error} -> {:reply, :wrong_args_error, state}
+    end
   end
 
   def handle_call({:lists, cmd, args}, _from, state) do
-    {:ok, return_value, new_state} = ListsImpl.execute(cmd, args, state)
-    {:reply, return_value, new_state}
+    case ListsImpl.execute(cmd, args, state) do
+      {:ok, return_value, new_state} -> {:reply, return_value, new_state}
+      {:error, :wrong_args_error} -> {:reply, :wrong_args_error, state}
+    end
   end
 
   def handle_call({:get_any_key, key}, _from, state) do
     {:reply, state[key], state}
   end
 
+  def terminate(_, state) do
+    IO.inspect state
+    # File.write(Path.expand("./binny"), Enum.to_list(state))
+  end
+
   defp via_tuple(name) do
     {:via, Registry, {:database_registry, name}}
   end
+
 
 end

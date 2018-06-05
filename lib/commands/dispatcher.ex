@@ -1,30 +1,66 @@
 defmodule Rediex.Commands.Dispatcher do
-
   @moduledoc false
 
   alias Rediex.Cluster
   alias Rediex.Commands.Strings
   alias Rediex.Commands.Lists
 
-  def get_available_commands do
-    %{
-      "get" => [Strings, :get],
-      "set" => [Strings, :set],
-      "getset" => [Strings, :get_set],
-      "incr" => [Strings, :incr],
-      "incrby" => [Strings, :incr_by],
-      "decr" => [Strings, :decr],
-      "decrby" => [Strings, :decr_by],
-      "lpush" => [Lists, :lpush]
-    }
+  import Rediex.Commands.Helpers
+
+  @not_implemented "(Error) command not implemented"
+
+  @available_commands %{
+    "get" => [Strings, :get, n_args: 1],
+    "set" => [Strings, :set, n_args: 2],
+    "getset" => [Strings, :get_set, n_args: 2],
+    "incr" => [Strings, :incr, n_args: 1],
+    "incrby" => [Strings, :incr_by, n_args: 2],
+    "decr" => [Strings, :decr, n_args: 1],
+    "decrby" => [Strings, :decr_by, n_args: 2],
+    "lpush" => [Lists, :lpush, n_args: :infinity, min_args: 2]
+  }
+
+  def dispatch(command, args) do
+    db =
+      case args do
+        [] -> nil
+        [key | _] -> get_db(key)
+      end
+
+    @available_commands
+    |> Map.get(command)
+    |> validate(args)
+    |> execute(db, args)
   end
 
-  def dispatch(command, [key | _] = args) do
-    db = get_db(key)
-    case Map.get(get_available_commands(), command) do
-      nil -> raise "Command not implemented"
-      [module, fun] -> apply(module, fun, [db, args])
+  defp validate(nil, _), do: @not_implemented
+
+  defp validate([_, fun | opts] = cmd_spec, args) do
+    valid? =
+      case(opts) do
+        [{:n_args, :infinity}, {:min_args, n} | _] -> length(args) >= n
+        [{:n_args, n} | _] -> length(args) == n
+      end
+
+    if valid? do
+      cmd_spec
+    else
+      fun |> to_string |> wrong_args_error
     end
+  end
+
+  defp execute([module, fun | _], db, args), do: apply(module, fun, [db, args])
+  defp execute(error, _, _), do: error
+
+  def get_any_key(key) do
+    db = get_db(key)
+    GenServer.call(db, {:get_any_key, key})
+  end
+
+  def parse(input) do
+    input
+    |> String.trim()
+    |> String.split()
   end
 
   defp get_db(key) do
@@ -32,10 +68,4 @@ defmodule Rediex.Commands.Dispatcher do
     [{pid, _}] = Registry.lookup(:database_registry, "db_#{db_slot}")
     pid
   end
-
-  def get_any_key(key) do
-    db = get_db(key)
-    GenServer.call(db, {:get_any_key, key})
-  end
-
 end
