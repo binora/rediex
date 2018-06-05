@@ -37,15 +37,15 @@ defmodule Rediex.Commands.StringsTest do
   end
 
   test "incryby should increment a key by given step" do
-    dispatch("set", ["incr_by_key", 10])
-    dispatch("incrby", ["incr_by_key", 10])
+    dispatch("set", ["incr_by_key", "10"])
+    dispatch("incrby", ["incr_by_key", "10"])
 
     assert 20 == dispatch("get", ["incr_by_key"])
   end
 
   test "decrby should increment a key by given step" do
-    dispatch("set", ["decr_by_key", 10])
-    dispatch("decrby", ["decr_by_key", 10])
+    dispatch("set", ["decr_by_key", "10"])
+    dispatch("decrby", ["decr_by_key", "10"])
 
     assert 0 == dispatch("get", ["decr_by_key"])
   end

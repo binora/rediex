@@ -1,5 +1,6 @@
 defmodule Rediex.Server do
   @moduledoc false
+  alias Rediex.Commands.Dispatcher
 
   @port Application.get_env(:rediex, :port)
   @ip Application.get_env(:rediex, :ip)
@@ -39,11 +40,17 @@ defmodule Rediex.Server do
     :gen_tcp.recv(client, 0)
   end
 
-  defp reply({:error, :closed}, client) do
+  defp reply({:error, :closed}, _) do
     exit(:shutdown)
   end
 
-  defp reply({:ok, data}, client) do
-    :gen_tcp.send(client, data)
+  defp reply({:ok, input}, client) do
+    result =
+      case Dispatcher.parse(input) do
+        [] -> ""
+        [command | args] -> Dispatcher.dispatch(command, args)
+      end
+
+    :gen_tcp.send(client, to_string(result) <> "\r\n")
   end
 end

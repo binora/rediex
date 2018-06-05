@@ -12,7 +12,7 @@ defmodule Rediex do
       supervisor(Rediex.Database.Supervisor, [:database_supervisor]),
       worker(Task, [&Cluster.create/0], id: :make_cluster, restart: :temporary),
       {Task.Supervisor, name: :connection_supervisor},
-      {Task, fn -> Server.accept() end}
+      {Task, &Server.accept/0}
     ]
 
     Logger.info("Started rediex")

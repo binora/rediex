@@ -8,18 +8,18 @@ defmodule Rediex.Database do
     GenServer.start_link(__MODULE__, state, name: via_tuple(name))
   end
 
-  def init(state) do
-    {:ok, state}
-  end
-
   def handle_call({:strings, cmd, args}, _from, state) do
-    {:ok, return_value, new_state} = StringsImpl.execute(cmd, args, state)
-    {:reply, return_value, new_state}
+    case StringsImpl.execute(cmd, args, state) do
+      {:ok, return_value, new_state} -> {:reply, return_value, new_state}
+      {:error, :wrong_args_error} -> {:reply, :wrong_args_error, state}
+    end
   end
 
   def handle_call({:lists, cmd, args}, _from, state) do
-    {:ok, return_value, new_state} = ListsImpl.execute(cmd, args, state)
-    {:reply, return_value, new_state}
+    case ListsImpl.execute(cmd, args, state) do
+      {:ok, return_value, new_state} -> {:reply, return_value, new_state}
+      {:error, :wrong_args_error} -> {:reply, :wrong_args_error, state}
+    end
   end
 
   def handle_call({:get_any_key, key}, _from, state) do

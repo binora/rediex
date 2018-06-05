@@ -25,6 +25,10 @@ defmodule Rediex.Commands.Strings.Impl do
     end
   end
 
+  def execute(_, _, _) do
+    {:error, :wrong_args_error}
+  end
+
   defp increment(value, step) when is_number(value), do: value + step
   defp increment(value, step) when is_nil(value), do: step
 

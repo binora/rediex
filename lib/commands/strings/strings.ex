@@ -23,10 +23,11 @@ defmodule Rediex.Commands.Strings do
   end
 
   def incr_by(db, [key, step]) do
-    GenServer.call(db, {:strings, :incr, [key, step]})
+    GenServer.call(db, {:strings, :incr, [key, String.to_integer(step)]})
   end
 
   def decr_by(db, [key, step]) do
-    GenServer.call(db, {:strings, :incr, [key, -step]})
+    GenServer.call(db, {:strings, :incr, [key, -String.to_integer(step)]})
   end
+
 end
