@@ -21,23 +21,16 @@ defmodule Rediex.Cluster do
     {:ok, do_create(@limit, @size)}
   end
 
-  defp do_create(limit, 1), do: create_database("db_1", %{max_crc: limit})
+  defp do_create(_, 1), do: create_database("db_1")
 
   defp do_create(limit, size) when size > limit,
     do: {:error, "#{size} cannot be greater than #{limit}"}
 
-  defp do_create(limit, size) do
-    slot_size = round(@limit / @size)
-
-    pids =
-      for i <- 1..(size - 1) do
-        create_database("db_#{i}", %{max_crc: slot_size * i})
-      end
-
-    pids ++ create_database("db_#{size}", %{max_crc: limit})
+  defp do_create(_, size) do
+    1..size |> Enum.each(&create_database/1)
   end
 
-  defp create_database(name, state) do
-    Supervisor.start_child(:database_supervisor, [name, state])
+  defp create_database(index) do
+    Supervisor.start_child(:database_supervisor, ["db_#{index}", %{}])
   end
 end

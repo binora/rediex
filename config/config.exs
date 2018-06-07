@@ -20,7 +20,6 @@ use Mix.Config
 #
 #     config :logger, level: :info
 #
-
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
 # by uncommenting the line below and defining dev.exs, test.exs and such.
@@ -29,5 +28,10 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 
-config :rediex, cluster_size: 3
-config :rediex, ip: {127, 0, 0, 1}, port: 6380
+config :rediex,
+  ip: {127, 0, 0, 1},
+  port: 6380,
+  cluster_size: 3,
+  auto_backups?: false,
+  snapshot_path: "snapshots/dump.rdb",
+  snapshot_interval: 5_000

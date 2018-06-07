@@ -1,4 +1,5 @@
 defmodule Rediex.Commands.StringsTest do
+  @moduledoc false
   use ExUnit.Case
   import Rediex.Commands.Dispatcher
   alias Rediex.Commands.Strings.Impl
