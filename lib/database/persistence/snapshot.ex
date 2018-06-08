@@ -22,10 +22,11 @@ defmodule Rediex.Database.Persistence.Snapshot do
 
   def handle_info(:take_snapshot, state) do
     %{interval: interval, snapshot_path: snapshot_path, once: once} = state
-    [dir, file] = Path.split(snapshot_path)
-    
-    dir_exists? = dir |> File.exists?
-    if not(dir_exists?) do
+    [dir, _] = Path.split(snapshot_path)
+
+    dir_exists? = File.exists? dir
+
+    if not dir_exists? do
       File.mkdir!(dir)
     end
 
