@@ -2,8 +2,8 @@ defmodule Rediex.Database.Persistence.Snapshot do
   @moduledoc false
   use GenServer
 
-  def start_link(dir, interval, once \\ nil) do
-    state = %{interval: interval, dir: dir, once: once}
+  def start_link(snapshot_path, interval, once \\ nil) do
+    state = %{interval: interval, snapshot_path: snapshot_path, once: once}
     GenServer.start_link(__MODULE__, state, name: :snapshot_worker)
   end
 
@@ -21,12 +21,18 @@ defmodule Rediex.Database.Persistence.Snapshot do
   end
 
   def handle_info(:take_snapshot, state) do
-    %{interval: interval, dir: dir, once: once} = state
+    %{interval: interval, snapshot_path: snapshot_path, once: once} = state
+    [dir, file] = Path.split(snapshot_path)
+    
+    dir_exists? = dir |> File.exists?
+    if not(dir_exists?) do
+      File.mkdir!(dir)
+    end
 
     Supervisor.which_children(:database_supervisor)
     |> Enum.map(&get_db_state/1)
     |> Enum.reduce(&merge_db_state/2)
-    |> write_to_file(dir)
+    |> write_to_file(snapshot_path)
 
     if is_nil(once) do
       take_snapshot_after(interval)
