@@ -27,7 +27,7 @@ defmodule Rediex do
       [
         supervisor(Registry, [:unique, :database_registry]),
         supervisor(Rediex.Database.Supervisor, [:database_supervisor]),
-        worker(Task, [&Cluster.create/0], id: :make_cluster, restart: :temporary),
+        worker(Task, [&Cluster.create/0], id: :make_clstr, restart: :temporary),
         {Task.Supervisor, name: :connection_supervisor},
         {Task, &Server.accept/0}
       ] ++ snapshot_workers

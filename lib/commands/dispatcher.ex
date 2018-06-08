@@ -78,7 +78,6 @@ defmodule Rediex.Commands.Dispatcher do
   defp get_pid({_, pid, _, _}), do: pid
 
   defp clean_database pid do
-    IO.inspect pid
     GenServer.call(pid, :clean)
   end
 end

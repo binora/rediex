@@ -4,7 +4,6 @@ defmodule Rediex.Database do
   alias Rediex.Commands.Strings.Impl, as: StringsImpl
   alias Rediex.Commands.Lists.Impl, as: ListsImpl
 
-
   def start_link(name, state \\ %{}) do
     GenServer.start_link(__MODULE__, state, name: via_tuple(name))
   end
