@@ -33,6 +33,10 @@ defmodule Rediex.Database do
     {:reply, state, state}
   end
 
+  def handle_call(:clean, _from, _) do
+    {:reply, :ok, %{}}
+  end
+
   defp via_tuple(name) do
     {:via, Registry, {:database_registry, name}}
   end

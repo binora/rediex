@@ -68,4 +68,17 @@ defmodule Rediex.Commands.Dispatcher do
     [{pid, _}] = Registry.lookup(:database_registry, "db_#{db_slot}")
     pid
   end
+
+  def clean_all_databases do
+    Supervisor.which_children(:database_supervisor)
+    |> Enum.map(&get_pid/1)
+    |> Enum.each(&clean_database/1)
+  end
+
+  defp get_pid({_, pid, _, _}), do: pid
+
+  defp clean_database pid do
+    IO.inspect pid
+    GenServer.call(pid, :clean)
+  end
 end
