@@ -32,6 +32,6 @@ config :rediex,
   ip: {127, 0, 0, 1},
   port: 6380,
   cluster_size: 3,
-  auto_backups?: false,
+  auto_backups?: true,
   snapshot_path: "snapshots/dump.rdb",
   snapshot_interval: 5_000
