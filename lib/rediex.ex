@@ -7,7 +7,7 @@ defmodule Rediex do
   require Logger
 
   @snapshot_path Application.get_env(:rediex, :snapshot_path)
-  @backup_interval Application.get_env(:rediex, :snapshot_interval)
+  @snapshot_interval Application.get_env(:rediex, :snapshot_interval)
   @auto_backups? Application.get_env(:rediex, :auto_backups?)
 
   def start(_type, _args) do

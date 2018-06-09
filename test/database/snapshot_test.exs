@@ -25,7 +25,12 @@ defmodule Rediex.Database.Persistence.SnapshotTest do
     expected_result = %{"key1" => 2, "key2" => 20, "my_list" => ["3", "2", "1"]}
 
     commands |> Enum.each(fn [cmd, args] -> Dispatcher.dispatch(cmd, args) end)
-    {:ok, pid} = Snapshot.start_link(@snapshot_path, 100, :once)
+
+    pid =
+      case Snapshot.start_link(@snapshot_path, 100, :once) do
+        {:ok, pid} -> pid
+        {:error, {:already_started, pid}} -> pid
+      end
     send(pid, :take_snapshot)
 
     Process.sleep(2000)
