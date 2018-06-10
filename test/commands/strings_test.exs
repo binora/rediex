@@ -4,6 +4,10 @@ defmodule Rediex.Commands.StringsTest do
   import Rediex.Commands.Dispatcher
   alias Rediex.Commands.Strings.Impl
 
+  setup do
+    clean_all_databases()
+  end
+
   test "get command should return nil for unset key" do
     assert nil == dispatch("get", ["unset-key"])
   end
@@ -64,5 +68,21 @@ defmodule Rediex.Commands.StringsTest do
     dispatch("set", ["my_key", "hello"])
     assert "hello" == dispatch("getset", ["my_key", "world"])
     assert "world" == dispatch("get", ["my_key"])
+  end
+
+  test "append should set value if key doesnt exist" do
+    dispatch("append", ["my_key", "hello"])
+    assert "hello" == dispatch("get", ["my_key"])
+  end
+
+  test "append should return an error if original value is not a string or integer" do
+    dispatch("lpush", ["my_list", 1, 2, 3, 4])
+    error = dispatch("append", ["my_list", "some_string"])
+    assert error == Impl.wrong_type_error
+  end
+
+  test "append should return length of new string formed after concatenation" do
+    dispatch("set", ["my_key", "hello"])
+    assert 10 == dispatch("append", ["my_key", "world"])
   end
 end

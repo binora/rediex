@@ -30,4 +30,8 @@ defmodule Rediex.Commands.Strings do
     GenServer.call(db, {:strings, :incr, [key, -String.to_integer(step)]})
   end
 
+  def append(db, [key, value]) do
+    GenServer.call(db, {:strings, :append, [key, value]})
+  end
+
 end

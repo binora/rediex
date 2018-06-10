@@ -24,8 +24,6 @@ defmodule Rediex.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:plug, "~> 1.4"},
-      {:jason, "~> 1.0"},
       {:crc, "~> 0.9.0"},
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},

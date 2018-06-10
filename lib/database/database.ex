@@ -13,7 +13,7 @@ defmodule Rediex.Database do
   def handle_call({:strings, cmd, args}, _from, state) do
     case StringsImpl.execute(cmd, args, state) do
       {:ok, return_value, new_state} -> {:reply, return_value, new_state}
-      {:error, :wrong_args_error} -> {:reply, :wrong_args_error, state}
+      {:error, error} -> {:reply, error, state}
     end
   end
 
