@@ -18,13 +18,14 @@ default port: `6380`
 # Commands implemented so far
 
 ## Strings
-- GET
-- SET
-- GETSET
-- INCR
-- INCRBY
-- DECR
-- DECRBY
+- [GET](https://redis.io/commands/get)
+- [SET](https://redis.io/commands/set)
+- [GETSET](https://redis.io/commands/getset)
+- [INCR](https://redis.io/commands/incr)
+- [INCRBY](https://redis.io/commands/incrby)
+- [DECR](https://redis.io/commands/decr)
+- [DECRBY](https://redis.io/commands/decrby)
+- [APPEND](https://redis.io/commands/append)
 
 
 ## Lists
