@@ -22,7 +22,6 @@ defmodule Rediex do
       else
         []
       end
-
     children =
       [
         supervisor(Registry, [:unique, :database_registry]),
