@@ -29,8 +29,10 @@ default port: `6380`
 
 
 ## Lists
-
-- LPUSH
+- [LPUSH](https://redis.io/commands/lpush)
+- [RPUSH](https://redis.io/commands/rpush)
+- [LPOP](https://redis.io/commands/lpop)
+- [RPOP](https://redis.io/commands/rpop)
 
 
 
