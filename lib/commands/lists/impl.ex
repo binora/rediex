@@ -14,7 +14,7 @@ defmodule Rediex.Commands.Lists.Impl do
 
   def execute(:rpop, [key], state) do
     list = state[key] || []
-    {last, remaining} = List.pop_at(list, length(list)-1)
+    {last, remaining} = List.pop_at(list, length(list) - 1)
     {:ok, last, Helpers.set(state, key, remaining)}
   end
 
