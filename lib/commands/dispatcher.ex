@@ -18,7 +18,11 @@ defmodule Rediex.Commands.Dispatcher do
     "decr" => [Strings, :decr, n_args: 1],
     "decrby" => [Strings, :decr_by, n_args: 2],
     "append" => [Strings, :append, n_args: 2],
-    "lpush" => [Lists, :lpush, n_args: :infinity, min_args: 2]
+    "lpush" => [Lists, :lpush, n_args: :infinity, min_args: 2],
+    "rpush" => [Lists, :rpush, n_args: :infinity, min_args: 2],
+    "rpop" => [Lists, :rpop, n_args: 1],
+    "lpop" => [Lists, :lpop, n_args: 1],
+    "lrange" => [Lists, :lrange, n_args: 3]
   }
 
   def dispatch(command, args) do
