@@ -3,6 +3,7 @@ defmodule Rediex.Commands.StringsTest do
   use ExUnit.Case
   import Rediex.Commands.Dispatcher
   alias Rediex.Commands.Strings.Impl
+  alias Rediex.Commands.Helpers
 
   setup do
     clean_all_databases()
@@ -27,8 +28,7 @@ defmodule Rediex.Commands.StringsTest do
     assert 1 == dispatch("get", ["unsetkey2"])
   end
 
-  test "incr should increment a key by 1" do
-    dispatch("set", ["incr_key", 10])
+  test "incr should increment a key by 1" do dispatch("set", ["incr_key", 10])
     dispatch("incr", ["incr_key"])
 
     assert 11 == dispatch("get", ["incr_key"])
@@ -60,7 +60,7 @@ defmodule Rediex.Commands.StringsTest do
     dispatch("set", ["incr_error_key", "string"])
     error = dispatch("incr", ["incr_error_key"])
 
-    assert error == Impl.not_an_integer()
+    assert error == Helpers.not_an_integer()
     assert "string" == dispatch("get", ["incr_error_key"])
   end
 
@@ -78,7 +78,7 @@ defmodule Rediex.Commands.StringsTest do
   test "append should return an error if original value is not a string or integer" do
     dispatch("lpush", ["my_list", 1, 2, 3, 4])
     error = dispatch("append", ["my_list", "some_string"])
-    assert error == Impl.wrong_type_error
+    assert error == Helpers.wrong_type_error
   end
 
   test "append should return length of new string formed after concatenation" do

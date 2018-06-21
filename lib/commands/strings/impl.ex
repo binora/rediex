@@ -2,11 +2,6 @@ defmodule Rediex.Commands.Strings.Impl do
   @moduledoc false
   alias Rediex.Commands.Helpers
 
-  @not_an_integer "(error) ERR value is not an integer or out of range"
-  @wrong_type_error "(error) WRONGTYPE Operation against a key holding the wrong kind of value(error) WRONGTYPE Operation against a key holding the wrong kind of value"
-
-  def not_an_integer, do: @not_an_integer
-  def wrong_type_error, do: @wrong_type_error
 
   def execute(:set, [key, value], state) do
     {:ok, value, Helpers.set(state, key, value)}
@@ -39,14 +34,14 @@ defmodule Rediex.Commands.Strings.Impl do
 
   defp increment(value, step) do
     case Integer.parse(value) do
-      :error -> {:error, @not_an_integer}
+      :error -> {:error, Helpers.not_an_integer()}
       {value, ""} -> increment(value, step)
-      {_value, _} -> {:error, @not_an_integer}
+      {_value, _} -> {:error, Helpers.not_an_integer()}
     end
   end
 
   defp append(nil, to_append), do: to_append
-  defp append(value, _) when is_list(value), do: {:error, @wrong_type_error}
+  defp append(value, _) when is_list(value), do: {:error, Helpers.wrong_type_error()}
   defp append(value, to_append) do
     value
     |> to_string
